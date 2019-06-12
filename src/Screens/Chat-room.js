@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { EvilIcons, Feather } from '@expo/vector-icons'
 import { Container, Header, Content, Form, Item, Input, Label, Button, Text, List, ListItem } from 'native-base';
-import { db } from '../../firebase';
+import { db, firebaseAuth } from '../../firebase';
 import UpdateModal from './update-modal';
 
 export default class ChatRoom extends Component {
@@ -21,7 +21,15 @@ export default class ChatRoom extends Component {
   componentDidMount() {
     this.getRecord()
   }
-  
+
+  signOutHandle = () => {
+    this.setState({ isLoading: true })
+    firebaseAuth.signOut()
+      .then(res => console.log('User Signed Out: ', res))
+      .catch(err => console.log('Sign Out Error: ', err))
+    this.setState({ isLoading: false }, () => this.props.navigation.navigate('Login'))
+  }
+
   _toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible })
   }
@@ -44,9 +52,9 @@ export default class ChatRoom extends Component {
       message: this.state.message,
     }
     db.collection('Chats').add(data)
-      .then(rec => console.log('Record Saved successfully: ', rec.data()))
+      .then(() => console.log('Record Saved successfully: '))
       .catch(err => console.log('Error adding new record: ', err))
-       this.setState({ isLoading: false })
+    this.setState({ name: '', message: '', isLoading: false, })
 
     //Transactions
 
@@ -109,32 +117,32 @@ export default class ChatRoom extends Component {
   }
 
   handleUpdate = () => {
-    this.setState({isLoading: true})
+    this.setState({ isLoading: true })
     const updateMessaeg = {
       name: this.state.name,
       message: this.state.message
     }
     db.collection('Chats').doc(this.state.updateId).update(updateMessaeg)
-    .then( () => console.log( 'Record has been updated'))
-    .catch(err => console.log('Updating record Error :', err))
-     this.setState({ isLoading: false })
-     this._toggleModal()
+      .then(() => console.log('Record has been updated'))
+      .catch(err => console.log('Updating record Error :', err))
+    this.setState({ isLoading: false })
+    this._toggleModal()
   }
 
   handleDelete = (id) => {
-    this.setState({isLoading: true})
+    this.setState({ isLoading: true })
     db.collection("Chats").doc(id).delete()
-    .then(rec => console.log('Record Deleted!:', rec))
-    .catch(err => console.log('Error record Deleting:', err))
-    this.setState({isLoading: false})
+      .then(() => console.log('Record Deleted!:'))
+      .catch(err => console.log('Error record Deleting:', err))
+    this.setState({ isLoading: false })
   }
 
   render() {
-    if(this.state.isLoading){
+    if (this.state.isLoading) {
       return (
-      <View style={styles.activity}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+        <View style={styles.activity}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
       )
     }
     return (
@@ -163,6 +171,12 @@ export default class ChatRoom extends Component {
                 <Text style={{ color: '#fff' }}>Send</Text>
               </Button>
             </View>
+
+            <View style={{ marginTop: 20 }}>
+              <Button block onPress={this.signOutHandle}>
+                <Text style={{ color: '#fff' }}>Sign Out</Text>
+              </Button>
+            </View>
           </View>
           <View style={{ flex: 1, borderWidth: 1, borderStyle: 'solid', marginTop: 10 }}>
             <View>
@@ -175,7 +189,7 @@ export default class ChatRoom extends Component {
                           <Text>{msg.name}</Text>
                           <Text>{msg.message}</Text>
                           <TouchableOpacity
-                            onPress = { () => this._openModal(msg._id) }
+                            onPress={() => this._openModal(msg._id)}
                           >
                             <Feather name='edit' size={20} />
                           </TouchableOpacity>
@@ -194,13 +208,13 @@ export default class ChatRoom extends Component {
                 {
                   this.state.isModalVisible ?
                     <UpdateModal
-                      visible = { this.state.isModalVisible }
-                      onDismissModal = { this._toggleModal }
-                      siblingState = { this.state }
-                      onChangeName = {this.handleChangeName }
-                      onChangeMessage = { this.handleChangeMessage }
-                      closeModal = { this._toggleModal }
-                      updateRecord = { this.handleUpdate }
+                      visible={this.state.isModalVisible}
+                      onDismissModal={this._toggleModal}
+                      siblingState={this.state}
+                      onChangeName={this.handleChangeName}
+                      onChangeMessage={this.handleChangeMessage}
+                      closeModal={this._toggleModal}
+                      updateRecord={this.handleUpdate}
 
                     /> : <Text>{" "}</Text>}
               </View>

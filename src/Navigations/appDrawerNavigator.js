@@ -1,9 +1,12 @@
 import { createDrawerNavigator, createAppContainer } from 'react-navigation';
-
-import HomeScreen from '../Screens/HomeScreen';
+import Login from '../Screens/Auth/LogIn';
+import ChatRoom from './../Screens/Chat-room';
+import SignUp from '../Screens/Auth/SignUp';
 
 const DrawerNavigator = createDrawerNavigator({ 
-  HomeScreen, 
+  SignUp, 
+  Login,
+  ChatRoom,
   })
 
 export const AppDrawerNavigator = createAppContainer(DrawerNavigator)

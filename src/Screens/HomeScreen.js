@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import MessageActions from './../Redux/Actions/message-actions';
 import { connect } from 'react-redux';
-import { db, fieldValue } from './../../firebase';
-import ChatRoom from './Chat-room';
 
 class HomeScreen extends Component {
 
@@ -21,7 +19,7 @@ class HomeScreen extends Component {
     }
     return (
       <View  style={ styles.homeContainer }>
-         <ChatRoom />
+         <Text>Home Screen</Text>
       </View>
     );
   }

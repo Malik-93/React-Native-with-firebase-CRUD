@@ -24,6 +24,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "11/06/2019",
+    "githubUrl": "https://github.com/Malik-93/React-Native-with-firebase-CRUD"
   }
 }
